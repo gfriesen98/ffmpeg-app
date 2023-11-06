@@ -1,13 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -36,6 +29,7 @@ namespace simple_ffmpeg_app {
                 ffmpegItem.OutputFilePath = folderBrowserDialog1.SelectedPath;
             }
         }
+
         private void cmbTemplate_SelectedIndexChanged(object sender, EventArgs e) {
             switch (cmbTemplate.SelectedIndex) {
                 case 0:
@@ -58,7 +52,7 @@ namespace simple_ffmpeg_app {
                     break;
             }
 
-            String argumentString = ffmpegItem.CreateFfmpegArgumentString(cmbTemplate.SelectedIndex);
+            String argumentString = ffmpegItem.CreateFfmpegArgumentString(cmbTemplate.SelectedIndex, overrideArgumentToggle.Checked);
             txtOverrideArgumentString.Text = argumentString;
         }
 
@@ -73,7 +67,7 @@ namespace simple_ffmpeg_app {
         private async void btnConvert_Click(object sender, EventArgs e) {
             ProcessStartInfo ffmpegConvertInfo = new ProcessStartInfo {
                 FileName = "ffmpeg",
-                Arguments = ffmpegItem.CreateFfmpegArgumentString(cmbTemplate.SelectedIndex),
+                Arguments = overrideArgumentToggle.Checked ? txtOverrideArgumentString.Text : ffmpegItem.CreateFfmpegArgumentString(cmbTemplate.SelectedIndex),
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
@@ -114,7 +108,7 @@ namespace simple_ffmpeg_app {
             });
 
             countFramesProc.Close();
-            textBox1.AppendText($"[my code] ffmpegItem.TotalFrames = {ffmpegItem.TotalFrames}");
+            textBox1.AppendText($"[my code] ffmpegItem.TotalFrames = {ffmpegItem.TotalFrames}\n");
 
             // start conversion. parse current frame from ffmpeg output
             Process convertProc = new Process {
@@ -152,7 +146,7 @@ namespace simple_ffmpeg_app {
             });
 
             convertProc.Close();
-            textBox1.AppendText($"[my code] DONE");
+            textBox1.AppendText($"[my code] DONE\n");
             lblCurrentFrame.Text += " - Done!";
         }
 
@@ -174,13 +168,10 @@ namespace simple_ffmpeg_app {
 
                     if (isFramecount) {
                         // store total frame count in the ffmpegItem object for later
-                        //ffmpegItem.TotalFrames = Int32.Parse(Regex.Replace(text.Split('=')[1].Trim(), @"fps", "").Trim());
                         ffmpegItem.TotalFrames = Int32.Parse(output);
-                        //textBox1.Text += $"[ffmpeg std]{Regex.Replace(text.Split('=')[1].Trim(), @"fps", "")}\n";
-                        textBox1.AppendText($"[ffmpeg] Frame {output}");
+                        textBox1.AppendText($"[ffmpeg] Frame {output}\n");
                     } else {
-                        //textBox1.Text += $"[ffmpeg std]{Regex.Replace(text.Split('=')[1].Trim(), @"fps", "")}\n";
-                        textBox1.AppendText($"[ffmpeg] {output}");
+                        textBox1.AppendText($"[ffmpeg] {output}\n");
                     }
                 }
             }
@@ -195,7 +186,6 @@ namespace simple_ffmpeg_app {
                 lblCurrentFrame.Invoke(new Action(() => UpdateLabelElement(text)));
             } else {
                 if (text.Contains("frame=")) {
-                    //lblCurrentFrame.Text = $"{Regex.Replace(text.Split('=')[1].Trim(), @"fps", "").Trim()}/{ffmpegItem.TotalFrames}";
                     lblCurrentFrame.Text = $"{GetFfmpegFrameNumber(text)}/{ffmpegItem.TotalFrames}";
                 }
             }
@@ -210,7 +200,6 @@ namespace simple_ffmpeg_app {
                 progressBar.Invoke(new Action(() => UpdateProgressBarElement(text)));
             } else {
                 if (text.Contains("frame=")) {
-                    //int value = Int32.Parse(Regex.Replace(text.Split('=')[1].Trim(), @"fps", "").Trim());
                     progressBar.Value = Int32.Parse(GetFfmpegFrameNumber(text));
                 }
             }
@@ -235,6 +224,7 @@ namespace simple_ffmpeg_app {
             txtBitrateTolerance.Enabled = true;
             chkDeinterlace.Checked = false;
             chkDeinterlace.Enabled = true;
+            ffmpegItem.Clear();
         }
 
         private void SetDSVideoDefaults() {
@@ -281,10 +271,21 @@ namespace simple_ffmpeg_app {
 
         private void checkBox1_CheckedChanged_1(object sender, EventArgs e) {
             txtOverrideArgumentString.ReadOnly = !overrideArgumentToggle.Checked;
-            txtOverrideArgumentString.Text = ffmpegItem.CreateFfmpegArgumentString(cmbTemplate.SelectedIndex);
+            txtOverrideArgumentString.Text = ffmpegItem.CreateFfmpegArgumentString(cmbTemplate.SelectedIndex, overrideArgumentToggle.Checked);
+
+            txtOutputFormat.ReadOnly = overrideArgumentToggle.Checked;
+            txtResolution.ReadOnly = overrideArgumentToggle.Checked;
+            txtVcodec.ReadOnly = overrideArgumentToggle.Checked;
+            txtAcodec.ReadOnly = overrideArgumentToggle.Checked;
+            txtVideoBitrate.ReadOnly = overrideArgumentToggle.Checked;
+            txtAudioRate.ReadOnly = overrideArgumentToggle.Checked;
+            txtAudioBitrate.ReadOnly = overrideArgumentToggle.Checked;
+            txtBitrateTolerance.ReadOnly = overrideArgumentToggle.Checked;
+            chkDeinterlace.Enabled = !overrideArgumentToggle.Checked;
         }
 
         private void txtInputFile_TextChanged(object sender, EventArgs e) {
+            txtOverrideArgumentString.Text = ffmpegItem.CreateFfmpegArgumentString(cmbTemplate.SelectedIndex, overrideArgumentToggle.Checked);
             if (txtDestinationFolder.Text == "No destination selected!" || txtInputFile.Text == "No file selected!") {
                 btnConvert.Enabled = false;
             } else {
@@ -293,6 +294,7 @@ namespace simple_ffmpeg_app {
         }
 
         private void txtDestinationFolder_TextChanged(object sender, EventArgs e) {
+            txtOverrideArgumentString.Text = ffmpegItem.CreateFfmpegArgumentString(cmbTemplate.SelectedIndex, overrideArgumentToggle.Checked);
             if (txtDestinationFolder.Text == "No destination selected!" || txtInputFile.Text == "No file selected!") {
                 btnConvert.Enabled = false;
             } else {

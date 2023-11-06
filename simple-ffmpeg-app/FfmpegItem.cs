@@ -1,9 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace simple_ffmpeg_app {
     public class FfmpegItem {
@@ -36,20 +32,35 @@ namespace simple_ffmpeg_app {
             this.outputFilePath = outputFilePath;
         }
 
+        /// <summary>
+        /// Clears all attributes. Retains inputFilePath and outputFilePath
+        /// </summary>
+        public void Clear() {
+            this.outputFormat = "";
+            this.resolution = "";
+            this.videoBitrate = "";
+            this.bitrateTolerance = "";
+            this.vcodec = "";
+            this.deinterlace = false;
+            this.acodec = "";
+            this.audioBitrate = "";
+            this.totalFrames = 0;
+        }
+
         public String CreateFfmpegArgumentString(int cmbTemplateIndex, bool overrideArgumentString = false) {
             String newFilename = Path.GetFileNameWithoutExtension(inputFilePath);
             String argumentString = $"-i \"{inputFilePath}\"";
 
             if (!overrideArgumentString) {
-                if (outputFormat != null) argumentString += $" -f {outputFormat}";
-                if (resolution != null) argumentString += $" -s {resolution}";
-                if (videoBitrate != null) argumentString += $" -b {videoBitrate}";
-                if (bitrateTolerance != null) argumentString += $" -bt {bitrateTolerance}";
-                if (vcodec != null) argumentString += $" -vcodec {vcodec}";
+                if (outputFormat != null || outputFormat != "") argumentString += $" -f {outputFormat}";
+                if (resolution != null || resolution != "") argumentString += $" -s {resolution}";
+                if (videoBitrate != null || videoBitrate != "") argumentString += $" -b {videoBitrate}";
+                if (bitrateTolerance != null || bitrateTolerance != "") argumentString += $" -bt {bitrateTolerance}";
+                if (vcodec != null || vcodec != "") argumentString += $" -vcodec {vcodec}";
                 if (deinterlace) argumentString += " -deinterlace";
-                if (acodec != null) argumentString += $" -acodec {acodec}";
-                if (audioRate != null) argumentString += $" -ar {audioRate}";
-                if (audioBitrate != null) argumentString += $" -ab {audioBitrate}";
+                if (acodec != null || acodec != "") argumentString += $" -acodec {acodec}";
+                if (audioRate != null || audioRate != "") argumentString += $" -ar {audioRate}";
+                if (audioBitrate != null || audioBitrate != "") argumentString += $" -ab {audioBitrate}";
                 if (cmbTemplateIndex == 1) argumentString += $" -ac 2";
             } else {
                 argumentString += " [REPLACE ME]";
@@ -57,7 +68,6 @@ namespace simple_ffmpeg_app {
 
             argumentString += $" \"{outputFilePath}\\{newFilename}.{this.outputFormat}\"";
             return argumentString;
-
         }
 
         public String GetFramecountArgumentString() {
