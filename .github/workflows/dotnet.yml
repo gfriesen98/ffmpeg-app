@@ -41,8 +41,12 @@ jobs:
         fallback: v0.0.1
 
     - name: Set New Tag Version
-      run: echo "NEW_TAG=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print}')" >> $GITHUB_ENV; echo $GITHUB_ENV
-      
+      id: new_tag
+      run: echo "NEW_TAG=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print}')" >> $GITHUB_ENV
+
+    - name: Testing
+      run: echo ${{ steps.new_tag.outputs.NEW_TAG }}
+    
     - name: Create Tag Release
       uses: softprops/action-gh-release@v1
       with:
