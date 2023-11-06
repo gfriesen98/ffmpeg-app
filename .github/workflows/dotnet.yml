@@ -45,7 +45,7 @@ jobs:
       #run: echo "NEW_TAG=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print}')" >> $GITHUB_OUTPUT
       # this works ^, as in steps.previoustag.outputs.tag shows up
       run: |
-        new_tag=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print}')"
+        new_tag=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print}')
         echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
       
     - name: Testing
