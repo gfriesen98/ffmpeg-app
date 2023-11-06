@@ -42,10 +42,15 @@ jobs:
 
     - name: Set New Tag Version
       id: new_tag
-      run: echo "NEW_TAG=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print}')" >> $GITHUB_OUTPUT
-
+      #run: echo "NEW_TAG=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print}')" >> $GITHUB_OUTPUT
+      # this works ^, as in steps.previoustag.outputs.tag shows up
+      run: |
+        new_tag=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print}')"
+        echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
+      
     - name: Testing
-      run: echo "${{ steps.new_tag.outputs.NEW_TAG }}"
+      run: echo "${{ steps.new_tag.outputs.new_tag }}"
+      # this doesnt ^, steps.new_tag.outputs.new_tag shows empty
     
     - name: Create Tag Release
       uses: softprops/action-gh-release@v1
