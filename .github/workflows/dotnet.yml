@@ -52,7 +52,7 @@ jobs:
 
     - name: Create new tag name
       id: getNewTag
-      run: echo "TestOutput=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print')" >> $GITHUB_OUTPUT
+      run: echo "TestOutput=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print'})" >> $GITHUB_OUTPUT
       shell: bash
       # run: echo "TestOutput=OSDFUHISDKFJH" >> $env:GITHUB_OUTPUT
       # shell: pwsh
