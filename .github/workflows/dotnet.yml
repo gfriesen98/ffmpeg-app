@@ -48,9 +48,9 @@ jobs:
 
     - name: Get release notes
       run: |
-        echo D:/a/ffmpeg-app/ffmpeg-app/simple-ffmpeg-app/notes/release_notes/current.txt >> D:/a/ffmpeg-app/ffmpeg-app/simple-ffmpeg-app/notes/release_notes/release_notes.md
+        cat D:\\a\\ffmpeg-app\\ffmpeg-app\\simple-ffmpeg-app\\notes\\release_notes\\current.txt >> D:\\a\\ffmpeg-app\\ffmpeg-app\\simple-ffmpeg-app\\notes\\release_notes\\release_notes.md
     - name: Show release notes
-      run: echo D:/a/ffmpeg-app/ffmpeg-app/simple-ffmpeg-app/notes/release_notes/release_notes.md
+      run: cat D:\\a\\ffmpeg-app\\ffmpeg-app\\simple-ffmpeg-app\\notes\\release_notes\\release_notes.md
     # chill for a sec damn
     # - name: Create Release
     #   uses: softprops/action-gh-release@v1
