@@ -32,24 +32,6 @@ jobs:
     - name: Build solution
       run: msbuild simple-ffmpeg-app.sln -t:rebuild -property:Configuration=Release
 
-    # - name: Set New Tag Version
-    #   id: new_tag
-    #   #run: echo "NEW_TAG=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print}')" >> $GITHUB_OUTPUT
-    #   # this works ^, as in steps.previoustag.outputs.tag shows up
-    #   run: |
-    #     new_tag=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print}')
-    #     echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
-      
-    # - name: Testing
-    #   run: echo "${{ steps.new_tag.outputs.new_tag }}"
-    #   # this doesnt ^, steps.new_tag.outputs.new_tag shows empty
-
-    # - name: Bump version and push tag
-    #   id: tag_version
-    #   uses: miguelfito/github-bump-and-tag-action@v1
-    #   with:
-    #     github_token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-
     - name: Get previous tag name
       id: previoustag
       uses: "WyriHaximus/github-action-get-previous-tag@v1"
@@ -60,14 +42,9 @@ jobs:
       id: getNewTag
       run: |
         echo Previous: ${{ steps.previoustag.outputs.tag }}
+        echo New: $(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print'})
         echo "TagName=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print'})" >> $GITHUB_OUTPUT
       shell: bash
-      # run: echo "TestOutput=OSDFUHISDKFJH" >> $env:GITHUB_OUTPUT
-      # shell: pwsh
-
-    - name: TestingReadingOutputs
-      id: testReadOutput
-      run: echo ${{ steps.getNewTag.outputs.TagName }}
     
     - name: Create Prerelease
       uses: softprops/action-gh-release@v1
@@ -78,9 +55,6 @@ jobs:
         fail_on_unmatched_files: true
         target_commitish: "main"
         generate_release_notes: true
-        #files: simple-ffmpeg-app.exe
-        #files: ".\\simple-ffmpeg-app\\bin\\Release\\simple-ffmpeg-app.exe"
-        #files: release.txt
         files: "D:/a/ffmpeg-app/ffmpeg-app/simple-ffmpeg-app/bin/Release/simple-ffmpeg-app.exe"
         token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
       env:
