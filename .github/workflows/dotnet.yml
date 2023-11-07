@@ -60,9 +60,8 @@ jobs:
 
     - name: TestingOutputs
       id: testOutput
-      run: |
-        $testOutput = "asdasd"
-        echo ::set-output name=TestOutput::$( $testOutput)
+      run: echo "TestOutput=OSDFUHISDKFJH" >> $env:GITHUB_OUTPUT
+      shell: pwsh
 
     - name: TestingReadingOutputs
       id: testReadOutput
