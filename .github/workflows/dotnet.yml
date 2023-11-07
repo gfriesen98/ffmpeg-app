@@ -50,9 +50,17 @@ jobs:
     #   with:
     #     github_token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
 
+    - name: Get previous tag name
+      id: previoustag
+      uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      with:
+        fallback: 0.0.1
+
     - name: Create new tag name
       id: getNewTag
-      run: echo "TagName=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print'})" >> $GITHUB_OUTPUT
+      run: |
+        echo Previous: ${{ steps.previoustag.outputs.tag }}
+        echo "TagName=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print'})" >> $GITHUB_OUTPUT
       shell: bash
       # run: echo "TestOutput=OSDFUHISDKFJH" >> $env:GITHUB_OUTPUT
       # shell: pwsh
