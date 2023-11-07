@@ -8,4 +8,4 @@ ensure ffmpeg is installed and set in your path
 
 Download from the [Releases menu](https://github.com/gfriesen98/ffmpeg-app/releases), or clone this repository:
 
-If you download the repository, open up the project in Visual Studio build. The builds are located in `.\simple-ffmpeg-app\bin\Release`
+If you download the repository, open up the project in Visual Studio. The builds are located in `.\simple-ffmpeg-app\bin\Release`
