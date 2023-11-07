@@ -1,0 +1,9 @@
+﻿# Release notes
+
+changes:
+- made the custom argument textbox update properly when fields are changed
+
+
+## usage
+
+download `simple-ffmpeg-app.exe` from Assets below, or download the source code/clone repository and build it yourself. Builds are located in `.\simple-ffmpeg-app\bin\release`
