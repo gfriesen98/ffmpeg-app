@@ -32,14 +32,6 @@ jobs:
     - name: Build solution
       run: msbuild simple-ffmpeg-app.sln -t:rebuild -property:Configuration=Release
 
-    #- name: testing
-    #  run: echo asdasdasd > release.txt
-    # - name: Get Previous Tag
-    #   id: previoustag
-    #   uses: "WyriHaximus/github-action-get-previous-tag@v1"
-    #   with:
-    #     fallback: v0.0.1
-
     # - name: Set New Tag Version
     #   id: new_tag
     #   #run: echo "NEW_TAG=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print}')" >> $GITHUB_OUTPUT
@@ -58,10 +50,12 @@ jobs:
     #   with:
     #     github_token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
 
-    - name: TestingOutputs
-      id: testOutput
-      run: echo "TestOutput=OSDFUHISDKFJH" >> $env:GITHUB_OUTPUT
-      shell: pwsh
+    - name: Create new tag name
+      id: getNewTag
+      run: echo "TestOutput=$(echo ${{ steps.previoustag.outputs.tag }} | awk -F. -v OFS=. '{$NF += 1; print')" >> $GITHUB_OUTPUT
+      shell: bash
+      # run: echo "TestOutput=OSDFUHISDKFJH" >> $env:GITHUB_OUTPUT
+      # shell: pwsh
 
     - name: TestingReadingOutputs
       id: testReadOutput
